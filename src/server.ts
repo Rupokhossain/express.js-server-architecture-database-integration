@@ -4,15 +4,15 @@ import express, {
   type Response,
 } from "express";
 const app: Application = express();
-const port = 5000;
+const port = config.port;
 
 import { Pool } from "pg";
+import config from "./config";
 
 app.use(express.json());
 
 const pool = new Pool({
-  connectionString:
-    "postgresql://neondb_owner:npg_vtY8JbO0foET@ep-floral-frost-aptb2tkh.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require",
+  connectionString: config.connection_string,
 });
 
 const initDB = async () => {
@@ -93,23 +93,102 @@ app.get("/users/:id", async (req: Request, res: Response) => {
 
   try {
     const result = await pool.query(
-           `
+      `
             SELECT * FROM users WHERE id=$1
 
             `,
       [id],
     );
 
-    if(result.rows.length === 0) {
-        res.status(500).json({
-            success: false,
-            message: "User Not found!",
-            data: {}
-        })
+    if (result.rows.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "User Not found!",
+        data: {},
+      });
     }
   } catch (error: any) {
     res.status(500).json({
-      error: error.message,
+      success: false,
+      message: error.message,
+      error: error,
+    });
+  }
+});
+
+app.put("/users/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { name, password, age, is_active } = req.body;
+
+  // console.log("ID : " ,id);
+  // console.log({name, password, age, is_active});
+
+  try {
+    const result = await pool.query(
+      `
+        UPDATE users
+         SET 
+         name=COALESCE($1, name),
+         password=COALESCE($2, password), 
+         age=COALESCE($3, age), 
+         is_active=COALESCE($4, is_active)
+
+         WHERE id=$5 RETURNING *
+      `,
+      [name, password, age, is_active, id],
+    );
+
+    if (result.rows.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "User Not found!",
+      });
+    }
+
+    // console.log(result)
+
+    res.status(200).json({
+      success: true,
+      message: "User updated successfully!",
+      data: result.rows[0],
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      error: error,
+    });
+  }
+});
+
+app.delete("/users/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `
+        DELETE FROM users WHERE id=$1
+      `,
+      [id],
+    );
+
+    if(result.rowCount === 0) {
+      res.status(404).json({
+        success: false,
+        message: "User Not Found!",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully!",
+      data: {},
+    })
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      error: error,
     });
   }
 });
