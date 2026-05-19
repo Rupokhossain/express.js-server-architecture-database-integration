@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
 import { userService } from "./user.service";
-import { pool } from "../../db";
 
 const createUser = async (req: Request, res: Response) => {
   // const { name, email, password } = req.body;

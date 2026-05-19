@@ -4,4 +4,5 @@ export interface IUSer {
     password: string;
     age: number;
     is_active?: boolean;
+    role? : string;
 }

@@ -4,15 +4,19 @@ import express, {
   type Response,
 } from "express";
 const app: Application = express();
-const port = config.port;
 
-import config from "./config";
 import { userRoute } from "./modules/user/user.route";
 
 import { profileRoute } from "./modules/profile/profile.route";
 import { authRoute } from "./modules/auth/auth.route";
+import logger from "./middleware/logger";
+import CookieParser from "cookie-parser";
+
 
 app.use(express.json());
+app.use(logger)
+app.use(CookieParser())
+
 
 app.get("/", (req: Request, res: Response) => {
   //   res.send('Hello World!')
