@@ -6,10 +6,11 @@ import express, {
 const app: Application = express();
 const port = config.port;
 
-import { Pool } from "pg";
 import config from "./config";
 import { userRoute } from "./modules/user/user.route";
-import { pool } from "./db";
+
+import { profileRoute } from "./modules/profile/profile.route";
+import { authRoute } from "./modules/auth/auth.route";
 
 app.use(express.json());
 
@@ -22,6 +23,8 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/users", userRoute);
+app.use("/profile", profileRoute);
+app.use("/auth", authRoute);
 
 
 
