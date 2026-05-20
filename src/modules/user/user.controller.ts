@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { userService } from "./user.service";
+import sendResponse from "../../utility/sendResponse";
 
 const createUser = async (req: Request, res: Response) => {
   // const { name, email, password } = req.body;
@@ -7,10 +8,12 @@ const createUser = async (req: Request, res: Response) => {
   try {
     const result = await userService.createUserIntoDB(req.body);
 
-    res.status(201).json({
-      message: "User created successfully!",
-      user: result.rows[0],
-    });
+   sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: "User Created successfully",
+    data: result.rows[0]
+   });
   } catch (error: any) {
     res.status(500).json({
       error: error.message,

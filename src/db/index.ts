@@ -22,7 +22,7 @@ export const initDB = async () => {
             )
             `);
 
-      await pool.query(`
+    await pool.query(`
           CREATE TABLE IF NOT EXISTS profiles (
             id SERIAL PRIMARY KEY,
             user_id INT UNIQUE REFERENCES users(id) ON DELETE CASCADE,
@@ -38,6 +38,18 @@ export const initDB = async () => {
 
           )
         `);
+
+    await pool.query(`
+CREATE TABLE IF NOT EXISTS products (
+            id SERIAL PRIMARY KEY,
+            title VARCHAR(100) NOT NULL,
+            price INT NOT NULL,
+            category VARCHAR(50),
+            stock INT DEFAULT 10,
+            created_at TIMESTAMP DEFAULT NOW(),
+            updated_at TIMESTAMP DEFAULT NOW()
+          )
+          `);
 
     console.log("database connected successfully!");
   } catch (error) {

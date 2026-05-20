@@ -11,11 +11,20 @@ import { profileRoute } from "./modules/profile/profile.route";
 import { authRoute } from "./modules/auth/auth.route";
 import logger from "./middleware/logger";
 import CookieParser from "cookie-parser";
+import cors from "cors"
+import globalErrorHandler from "./middleware/globalErrorHandler";
+import { product } from "./modules/product/product.route";
 
 
+app.use(CookieParser())
 app.use(express.json());
 app.use(logger)
-app.use(CookieParser())
+app.use(
+  cors({
+    origin: "http://localhost:5000/"
+  })
+)
+
 
 
 app.get("/", (req: Request, res: Response) => {
@@ -29,10 +38,10 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/users", userRoute);
 app.use("/profile", profileRoute);
 app.use("/auth", authRoute);
+app.use("/product", product);
 
 
-
-
+app.use(globalErrorHandler);
 
 
 
