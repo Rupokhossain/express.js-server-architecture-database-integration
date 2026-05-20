@@ -10,3 +10,6 @@ initDB();
 };
 
 main();
+
+
+export default app
