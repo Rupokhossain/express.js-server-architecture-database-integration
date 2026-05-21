@@ -27,7 +27,7 @@ const getAllProducts = async (
   try {
     const result = await productService.getProductIntoDB();
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: "Products retrived!",
       data: result,
@@ -49,7 +49,7 @@ const getSingleProducts = async (
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "User Not found!",
+        message: "Product Not found!",
         data: {},
       });
     }
@@ -84,7 +84,7 @@ const updateProduct = async (
     if (result.rows.length === 0) {
       res.status(404).json({
         success: false,
-        message: "User Not found!",
+        message: "Product Not found!",
       });
     }
 
@@ -115,7 +115,7 @@ const deleteProduct = async (
     if (result.rowCount === 0) {
       res.status(404).json({
         success: false,
-        message: "User Not Found!",
+        message: "Product Not Found!",
       });
     }
 
@@ -137,5 +137,6 @@ export const productController = {
   createProduct,
   getAllProducts,
   getSingleProducts,
+  updateProduct,
   deleteProduct
 };

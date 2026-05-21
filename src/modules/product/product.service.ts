@@ -39,15 +39,15 @@ const updateProductIntoDB = async (id: string, payload: IProduct) => {
     `
         UPDATE products
         SET
-        title=COALESCE(1$, title),
-        price=COALESCE(2$, price),
-        category=COALESCE(3$, category),
-        stock=COALESCE(4$, stock)
+        title=COALESCE($1, title),
+        price=COALESCE($2, price),
+        category=COALESCE($3, category),
+        stock=COALESCE($4, stock)
 
         WHERE id=$5 RETURNING *
 
     `,
-    [title, price, category, stock],
+    [title, price, category, stock ,id],
   );
   return result.rows[0];
 };
@@ -62,7 +62,7 @@ const deleteProductIntoDB = async (id: string) => {
         [id],
     
     );
-    return result
+    return result;
 }
 
 export const productService = {
